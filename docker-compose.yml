@@ -1,0 +1,36 @@
+services:
+  web:
+    image: message_exchange_app
+    build:
+      context: .
+      dockerfile: MessageExchange/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"  
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=MessagesDb;Username=MessagesUser;Password=1415926535
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - db 
+    networks:
+      - app-network
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: MessagesUser
+      POSTGRES_PASSWORD: 1415926535
+      POSTGRES_DB: MessagesDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  db_data:  
+
+networks:
+  app-network:  
+    driver: bridge
