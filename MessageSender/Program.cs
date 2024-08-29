@@ -1,4 +1,4 @@
-using MessageSender.Clients;
+using MessageClients.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +7,7 @@ var services = builder.Services;
 
 services.AddHttpClient<IMessageClient, MessageClient>(client =>
 {
-    client.BaseAddress = new Uri("http://db:5432");
+    client.BaseAddress = new Uri("http://server:8080");
 });
 
 services.AddControllersWithViews();

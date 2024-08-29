@@ -1,8 +1,8 @@
-﻿using MessageSender.Clients;
-using MessageSender.Models;
+﻿using MessageClients.Clients;
+using MessageClients.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MessageSender.Controllers;
+namespace MessageClients.Controllers;
 
 public class MessagesController : Controller
 {

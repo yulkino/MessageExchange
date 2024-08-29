@@ -1,6 +1,6 @@
-﻿using MessageSender.Models;
+﻿using MessageClients.Models;
 
-namespace MessageSender.Clients;
+namespace MessageClients.Clients;
 
 public class MessageClient : IMessageClient
 {

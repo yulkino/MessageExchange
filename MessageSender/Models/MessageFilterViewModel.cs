@@ -1,4 +1,4 @@
-﻿namespace MessageSender.Models;
+﻿namespace MessageClients.Models;
 
 public class MessageFilterViewModel
 {

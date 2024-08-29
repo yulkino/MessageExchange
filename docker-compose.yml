@@ -1,5 +1,5 @@
 services:
-  web:
+  server:
     image: message_exchange_app
     build:
       context: .
@@ -25,6 +25,20 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+  
+  clients:
+    image: message_clients_app
+    build:
+      context: .
+      dockerfile: MessageClients/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - server
     networks:
       - app-network
 

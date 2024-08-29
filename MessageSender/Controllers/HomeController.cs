@@ -1,9 +1,9 @@
-using MessageSender.Clients;
-using MessageSender.Models;
+using MessageClients.Clients;
+using MessageClients.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace MessageSender.Controllers;
+namespace MessageClients.Controllers;
 public class HomeController : Controller
 {
     private readonly IMessageClient _messageService;

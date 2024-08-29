@@ -12,19 +12,18 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MessageSender/MessageSender.csproj", "MessageSender/"]
-RUN dotnet restore "./MessageSender/MessageSender.csproj"
+COPY ["MessageClients/MessageClients.csproj", "MessageClients/"]
+RUN dotnet restore "./MessageClients/MessageClients.csproj"
 COPY . .
-WORKDIR "/src/MessageSender"
-RUN dotnet build "./MessageSender.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/MessageClients"
+RUN dotnet build "./MessageClients.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MessageSender.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./MessageClients.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MessageSender.dll"]
+ENTRYPOINT ["dotnet", "MessageClients.dll"]
