@@ -19,7 +19,7 @@ public class MessageClient : IMessageClient
 
     public async Task<List<MessageToGetViewModel>> GetMessagesAsync(DateTime? from, DateTime? to)
     {
-        var response = await _httpClient.GetAsync($"/messages?startDate={from:s}&endDate={to:s}");
+        var response = await _httpClient.GetAsync($"/message?from={from:s}&to={to:s}");
         response.EnsureSuccessStatusCode();
         var messages = await response.Content.ReadFromJsonAsync<List<MessageToGetViewModel>>();
 

@@ -1,4 +1,5 @@
 using MessageExchange.DTO;
+using MessageExchange.DTOs;
 using MessageExchange.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +20,11 @@ public class MessageController : ControllerBase
     public async Task<IActionResult> PostMessage([FromBody] MessageToSendDto message)
     {
         await _messageService.SendMessage(message);
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetMessages([FromQuery] DateTime? from, [FromQuery] DateTime? to)
+    public async Task<ActionResult<List<MessageToGetDto>>> GetMessages([FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
         var messages = await _messageService.GetMessages(from, to);
         return Ok(messages);

@@ -42,7 +42,9 @@
     <ul>
         @foreach (var message in Model.Messages)
         {
-            <li>@message.Timestamp: @message.Content (SerialNumber: @message.SerialNumber)</li>
+            <li data-utc="@message.Timestamp.ToString("o")">
+                @message.Content (SerialNumber: @message.SerialNumber)
+            </li>
         }
     </ul>
 }
@@ -50,4 +52,3 @@ else if (Model.Messages != null)
 {
     <p>There are no messages.</p>
 }
-
