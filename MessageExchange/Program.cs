@@ -1,4 +1,5 @@
 using MessageExchange;
+using MessageExchange.Hubs;
 using MessageExchange.Repositories;
 using MessageExchange.Services;
 using Npgsql;
@@ -14,7 +15,9 @@ services.AddSingleton(new NpgsqlConnection(connectionString));
 
 services.AddScoped<IMessageRepository, MessageRepository>();
 services.AddScoped<IMessageService, MessageService>();
+services.AddScoped<IMessageHub, MessageHub>();
 services.AddAutoMapper(AssemblyMarker.Assembly);
+services.AddSignalR();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -35,5 +38,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<MessageHub>("/hub/message");
 
 app.Run();

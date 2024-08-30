@@ -2,6 +2,7 @@
 using MessageExchange.DAO;
 using MessageExchange.DTO;
 using MessageExchange.DTOs;
+using MessageExchange.Hubs;
 using MessageExchange.Repositories;
 
 namespace MessageExchange.Services;
@@ -9,11 +10,13 @@ namespace MessageExchange.Services;
 public class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
+    private readonly IMessageHub _messageHub;
     private readonly IMapper _mapper;
 
-    public MessageService(IMessageRepository messageRepository, IMapper mapper)
+    public MessageService(IMessageRepository messageRepository, IMessageHub messageHub, IMapper mapper)
     {
         _messageRepository = messageRepository;
+        _messageHub = messageHub;
         _mapper = mapper;
     }
 
@@ -23,7 +26,7 @@ public class MessageService : IMessageService
 
         messageDao.Timestamp = DateTime.UtcNow;
         await _messageRepository.AddMessageAsync(messageDao);
-        //TODO send to WebSocket
+        await _messageHub.SendMessageToAll(messageDao.Content, messageDao.Timestamp, messageDao.SerialNumber);
     }
 
     public async Task<List<MessageToGetDto>> GetMessages(DateTime? from, DateTime? to)
