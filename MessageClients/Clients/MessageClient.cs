@@ -11,21 +11,25 @@ public class MessageClient : IMessageClient
         _httpClient = httpClient;
     }
 
-    public async Task SendMessageAsync(MessageToSendViewModel message)
+    public async Task<bool> SendMessageAsync(MessageToSendModel message)
     {
-        var response = await _httpClient.PostAsJsonAsync("/message/send", message);
-        response.EnsureSuccessStatusCode();
+        var response = await _httpClient.PostAsJsonAsync("message/send", message);
+
+        if (response.IsSuccessStatusCode)
+            return true;
+
+        return false;
     }
 
-    public async Task<List<MessageToGetViewModel>> GetMessagesAsync(DateTime? from, DateTime? to)
+    public async Task<(bool IsSuccessStatusCode, List<MessageToGetModel> FilteredMessages)> GetMessagesAsync(DateTime? from = null, DateTime? to = null)
     {
         var response = await _httpClient.GetAsync($"/message?from={from:s}&to={to:s}");
-        response.EnsureSuccessStatusCode();
-        var messages = await response.Content.ReadFromJsonAsync<List<MessageToGetViewModel>>();
 
-        if (messages is null)
-            return [];
+        if (!response.IsSuccessStatusCode)
+            return (false, []);
 
-        return messages;
+        var messages = await response.Content.ReadFromJsonAsync<List<MessageToGetModel>>();
+
+        return (true, messages ?? []);
     }
 }

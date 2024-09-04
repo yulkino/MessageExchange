@@ -1,49 +1,40 @@
 using MessageClients.Clients;
+using MessageClients.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var services = builder.Services;
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
-var serverUrl = "http://server:8080";
-services.AddHttpClient<IMessageClient, MessageClient>(client =>
+builder.Services.AddHttpClient<IMessageClient, MessageClient>(client =>
 {
-    client.BaseAddress = new Uri(serverUrl);
+    client.BaseAddress = new Uri("http://localhost:5108");
 });
+builder.Services.AddSignalR();
 
-services.AddSingleton(provider =>
-{
-    var connection = new HubConnectionBuilder()
-        .WithUrl($"http://server:8080/hub/message")
-        .WithAutomaticReconnect()
-        .Build();
-
-    connection.StartAsync().GetAwaiter().GetResult();
-    return connection;
-});
-
-services.AddControllersWithViews();
+builder.Services.AddScoped(_ => new HubConnectionBuilder()
+            .WithUrl($"http://localhost:5108/hub/message")
+            .WithAutomaticReconnect()
+            .Build());
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+app.UseAntiforgery();
 
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();

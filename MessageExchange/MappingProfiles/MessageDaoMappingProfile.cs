@@ -8,6 +8,7 @@ public class MessageDaoMappingProfile : Profile
 {
     public MessageDaoMappingProfile()
     {
-        CreateMap<MessageDao, MessageToGetDto>();
+        CreateMap<MessageDao, MessageToGetDto>()
+            .ForMember(x => x.Message, o => o.MapFrom(x => x.Content));
     }
 }

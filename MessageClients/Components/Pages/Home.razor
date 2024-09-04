@@ -1,0 +1,58 @@
+﻿@page "/"
+@using MessageClients.Models
+@using MessageClients.Clients
+@inject IMessageClient MessageClient
+
+<PageTitle>Home</PageTitle>
+
+<h3>Send Message</h3>
+
+<br />
+
+<EditForm Model="MessageModel" OnSubmit="SendMessage" FormName="SendForm">
+    <div>
+        <label>
+            Message:
+            <br />
+            <InputTextArea @bind-Value="MessageModel!.Message" />
+        </label>
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</EditForm>
+
+<br />
+
+@if (!InitialState && !IsRequestSuccessful)
+{
+    <p>Unable to send messages. Please try again later.</p>
+}
+else if (IsRequestSuccessful)
+{
+    <div class="alert alert-success">
+        "Message sent successfully!"
+    </div>
+}
+
+@code {
+    [SupplyParameterFromForm]
+    public MessageToSendModel? MessageModel { get; set; }
+
+    private bool IsRequestSuccessful;
+    private bool InitialState = true;
+
+
+    protected override void OnInitialized() => MessageModel ??= new();
+
+    public async Task SendMessage()
+    {
+        if (string.IsNullOrEmpty(MessageModel!.Message))
+            return;
+
+        IsRequestSuccessful = await MessageClient.SendMessageAsync(MessageModel);
+        InitialState = false;
+        MessageModel = new MessageToSendModel();
+    }
+}
+

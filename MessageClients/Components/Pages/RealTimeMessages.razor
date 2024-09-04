@@ -1,0 +1,48 @@
+﻿@page "/real-time-messages"
+
+@using MessageClients.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@inject HubConnection HubConnection
+
+<h3>Real-Time Messages</h3>
+
+<br />
+
+@if (messages.Count == 0)
+{
+    <p>There are no messages yet.</p>
+}
+
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message.Timestamp: @message.Message (SerialNumber: @message.SerialNumber)</li>
+    }
+</ul>
+
+@code {
+    private List<MessageToGetModel> messages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        HubConnection.On<string, DateTime, Guid>("ReceiveMessage", (content, timestamp, serialNumber) =>
+        {
+            messages.Add(new MessageToGetModel
+            {
+                Message = content,
+                Timestamp = timestamp,
+                SerialNumber = serialNumber
+            });
+            InvokeAsync(StateHasChanged);
+        });
+
+        await HubConnection.StartAsync();
+    }
+
+    public bool IsConnected => HubConnection!.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        await HubConnection.DisposeAsync();
+    }
+}
