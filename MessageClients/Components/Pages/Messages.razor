@@ -1,6 +1,8 @@
 ﻿@page "/messages"
 @using MessageClients.Models
-@inject MessageClients.Clients.IMessageClient MessageClient
+@using MessageClients.Clients
+@inject IMessageClient MessageClient
+@inject ILogger<Messages> Logger
 
 <h2>Receiving Messages</h2>
 
@@ -62,8 +64,11 @@ else if (IsRequestSuccessful)
     private bool IsRequestSuccessful;
     private bool InitialState = true;
 
-    protected override void OnInitialized() =>
+    protected override void OnInitialized()
+    {
         Filter ??= new();
+        Logger.LogTrace("Page {PageName} initialized", nameof(Messages));
+    }
 
     private async Task GetFilteredMessages()
     {
@@ -96,6 +101,7 @@ else if (IsRequestSuccessful)
 
     private async Task ClearFilters()
     {
+        Logger.LogDebug("Clearing all filters");
         Filter!.DateTimeFrom = null;
         Filter.DateTimeTo = null;
         Filter.TimeRange = null;
@@ -104,6 +110,7 @@ else if (IsRequestSuccessful)
 
     private async Task FilterInterval(int minutes)
     {
+        Logger.LogDebug("Using TimeRange filter for {TimeRangeMinutes}", minutes);
         Filter!.TimeRange = minutes;
         await GetFilteredMessages();
     }

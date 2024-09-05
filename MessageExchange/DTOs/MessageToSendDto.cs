@@ -1,4 +1,6 @@
-﻿namespace MessageExchange.DTO;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MessageExchange.DTOs;
 
 public class MessageToSendDto
 {

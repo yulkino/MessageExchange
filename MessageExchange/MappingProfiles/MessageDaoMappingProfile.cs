@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MessageExchange.DAO;
+using MessageExchange.DAOs;
 using MessageExchange.DTOs;
 
 namespace MessageExchange.MappingProfiles;

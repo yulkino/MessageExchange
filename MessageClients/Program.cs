@@ -1,21 +1,27 @@
 using MessageClients.Clients;
 using MessageClients.Components;
+using MessageClients.Options;
 using Microsoft.AspNetCore.SignalR.Client;
+using SimpleOptions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.AddConfigurationOptions<MessageExchangeOptions>(out var messageExchangeOptions);
+
 builder.Services.AddHttpClient<IMessageClient, MessageClient>(client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5108");
+    client.BaseAddress = new Uri(messageExchangeOptions.BaseAddress);
 });
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped(_ => new HubConnectionBuilder()
-            .WithUrl($"http://localhost:5108/hub/message")
+            .WithUrl($"{messageExchangeOptions.BaseAddress}/hub/message")
             .WithAutomaticReconnect()
             .Build());
 
@@ -25,7 +31,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

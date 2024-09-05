@@ -1,5 +1,4 @@
-﻿using MessageExchange.DTO;
-using MessageExchange.DTOs;
+﻿using MessageExchange.DTOs;
 
 namespace MessageExchange.Services;
 

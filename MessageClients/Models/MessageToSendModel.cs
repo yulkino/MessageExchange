@@ -4,7 +4,7 @@ namespace MessageClients.Models;
 
 public class MessageToSendModel
 {
-    [Required]
+    [Required, MaxLength(128)]
     public string Message { get; set; }
 
     public Guid SerialNumber { get; } = Guid.NewGuid();

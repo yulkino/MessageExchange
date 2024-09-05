@@ -1,4 +1,4 @@
-﻿using MessageExchange.DAO;
+﻿using MessageExchange.DAOs;
 
 namespace MessageExchange.Repositories;
 

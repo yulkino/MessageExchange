@@ -2,6 +2,7 @@
 @using MessageClients.Models
 @using MessageClients.Clients
 @inject IMessageClient MessageClient
+@inject ILogger<Home> Logger
 
 <PageTitle>Home</PageTitle>
 
@@ -10,6 +11,7 @@
 <br />
 
 <EditForm Model="MessageModel" OnSubmit="SendMessage" FormName="SendForm">
+    <DataAnnotationsValidator />
     <div>
         <label>
             Message:
@@ -43,12 +45,19 @@ else if (IsRequestSuccessful)
     private bool InitialState = true;
 
 
-    protected override void OnInitialized() => MessageModel ??= new();
+    protected override void OnInitialized()
+    {
+        MessageModel ??= new();
+        Logger.LogTrace("Page {PageName} initialized", nameof(Home));
+    }
 
     public async Task SendMessage()
     {
         if (string.IsNullOrEmpty(MessageModel!.Message))
+        {
+            Logger.LogDebug("Cannot send an empty message");
             return;
+        }
 
         IsRequestSuccessful = await MessageClient.SendMessageAsync(MessageModel);
         InitialState = false;

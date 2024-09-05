@@ -2,10 +2,12 @@ using MessageExchange;
 using MessageExchange.Hubs;
 using MessageExchange.Repositories;
 using MessageExchange.Services;
-using Microsoft.AspNetCore.SignalR;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 var services = builder.Services;
 // Add services to the container.
 

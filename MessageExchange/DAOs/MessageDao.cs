@@ -1,4 +1,4 @@
-﻿namespace MessageExchange.DAO;
+﻿namespace MessageExchange.DAOs;
 
 public class MessageDao
 {

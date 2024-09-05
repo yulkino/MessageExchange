@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using MessageExchange.DAO;
-using MessageExchange.DTO;
+using MessageExchange.DAOs;
 using MessageExchange.DTOs;
 using MessageExchange.Hubs;
 using MessageExchange.Repositories;
@@ -12,12 +11,15 @@ public class MessageService : IMessageService
     private readonly IMessageRepository _messageRepository;
     private readonly IMessageHub _messageHub;
     private readonly IMapper _mapper;
+    private readonly ILogger<MessageService> _logger;
 
-    public MessageService(IMessageRepository messageRepository, IMessageHub messageHub, IMapper mapper)
+    public MessageService(IMessageRepository messageRepository, IMessageHub messageHub,
+        IMapper mapper, ILogger<MessageService> logger)
     {
         _messageRepository = messageRepository;
         _messageHub = messageHub;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task SendMessage(MessageToSendDto message)
@@ -25,12 +27,14 @@ public class MessageService : IMessageService
         var messageDao = _mapper.Map<MessageDao>(message);
 
         messageDao.Timestamp = DateTime.UtcNow;
+        _logger.LogDebug("Assigned message Timestamp as UTC: {UtcDateTime}", messageDao.Timestamp);
         await _messageRepository.AddMessageAsync(messageDao);
         await _messageHub.SendMessageToAll(messageDao.Content, messageDao.Timestamp, messageDao.SerialNumber);
     }
 
     public async Task<List<MessageToGetDto>> GetMessages(DateTime? from, DateTime? to)
     {
+        _logger.LogInformation("Choosing interval type for getting messages");
         List<MessageDao> messages;
 
         messages = (from, to) switch
