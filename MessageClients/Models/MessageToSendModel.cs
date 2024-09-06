@@ -8,5 +8,8 @@ public class MessageToSendModel
     public string Message { get; set; }
 
     public Guid SerialNumber { get; } = Guid.NewGuid();
+
+    public override string ToString() =>
+        $"Message: {Message}; (SerialNumber: {SerialNumber})";
 }
 

@@ -12,4 +12,7 @@ public class MessageToGetModel
 
     [Required]
     public Guid SerialNumber { get; set; }
+
+    public override string ToString() =>
+        $"Message: {Message}; Timestamp: {Timestamp}; (SerialNumber: {SerialNumber})";
 }

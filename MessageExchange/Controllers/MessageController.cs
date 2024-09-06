@@ -1,7 +1,6 @@
 using MessageExchange.DTOs;
 using MessageExchange.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace MessageExchange.Controllers;
 [ApiController]

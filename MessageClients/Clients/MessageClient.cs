@@ -11,7 +11,7 @@ public class MessageClient(HttpClient httpClient, ILogger<MessageClient> logger)
 
         if (response.IsSuccessStatusCode)
         {
-            logger.LogDebug("Message sent successful");
+            logger.LogInformation("Message sent successful");
             return true;
         }
 
