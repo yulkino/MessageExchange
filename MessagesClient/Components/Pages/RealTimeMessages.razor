@@ -1,0 +1,48 @@
+﻿@page "/real-time-messages"
+@using MessagesClient.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@inject HubConnection HubConnection
+@inject ILogger<RealTimeMessages> Logger
+
+<h3>Real-Time Messages</h3>
+
+<br />
+
+@if (_messages.Count == 0)
+{
+    <p>There are no messages yet.</p>
+}
+
+<ul id="messagesList">
+    @foreach (var message in _messages)
+    {
+        <li>@message.Timestamp: @message.Message (SerialNumber: @message.SerialNumber)</li>
+    }
+</ul>
+
+@code {
+    private readonly List<MessageToGetModel> _messages = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Logger.LogDebug("Initializing the web socket connection...");
+        HubConnection.On<string, DateTime, Guid>("ReceiveMessage", (content, timestamp, serialNumber) =>
+        {
+            _messages.Add(new MessageToGetModel
+            {
+                Message = content,
+                Timestamp = timestamp,
+                SerialNumber = serialNumber
+            });
+            InvokeAsync(StateHasChanged);
+        });
+
+        await HubConnection.StartAsync();
+        Logger.LogTrace("Page {PageName} initialized", nameof(RealTimeMessages));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await HubConnection.DisposeAsync();
+    }
+}

@@ -1,0 +1,66 @@
+﻿@page "/"
+@using MessagesClient.Clients
+@using MessagesClient.Models
+@inject IMessageClient MessageClient
+@inject ILogger<Home> Logger
+
+<PageTitle>Home</PageTitle>
+
+<h3>Send Message</h3>
+
+<br />
+
+<EditForm Model="MessageModel" OnSubmit="SendMessage" FormName="SendMessageForm">
+    <DataAnnotationsValidator />
+    <div>
+        <label>
+            Message:
+            <br />
+            <InputTextArea @bind-Value="MessageModel!.Message" />
+        </label>
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</EditForm>
+
+<br />
+
+@if (!_initialState && !_isRequestSuccessful)
+{
+    <p>Unable to send messages. Please try again later.</p>
+}
+else if (_isRequestSuccessful)
+{
+    <div class="alert alert-success">
+        "Message sent successfully!"
+    </div>
+}
+
+@code {
+    [SupplyParameterFromForm]
+    public MessageToSendModel? MessageModel { get; set; }
+
+    private bool _isRequestSuccessful;
+    private bool _initialState = true;
+
+
+    protected override void OnInitialized()
+    {
+        MessageModel ??= new();
+        Logger.LogTrace("Page {PageName} initialized", nameof(Home));
+    }
+
+    public async Task SendMessage()
+    {
+        if (string.IsNullOrEmpty(MessageModel!.Message))
+        {
+            Logger.LogDebug("Cannot send an empty message");
+            return;
+        }
+
+        _isRequestSuccessful = await MessageClient.SendMessageAsync(MessageModel);
+        _initialState = false;
+        MessageModel = new MessageToSendModel();
+    }
+}

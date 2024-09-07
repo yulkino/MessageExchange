@@ -1,0 +1,117 @@
+﻿@page "/messages"
+@using MessagesClient.Clients
+@using MessagesClient.Models
+@inject IMessageClient MessageClient
+@inject ILogger<Messages> Logger
+
+<h2>Receiving Messages</h2>
+
+<text>Select the interval of minutes before the current moment (or "all" messages):</text>
+
+<br />
+
+<div class="form-group">
+    <button @onclick="SetTimeIntervalTo5">5</button>
+    <button @onclick="SetTimeIntervalTo10">10</button>
+    <button @onclick="SetTimeIntervalTo15">15</button>
+    <button @onclick="ClearFilters">all</button>
+</div>
+
+<br />
+
+<text>Or choose manually dates with time:</text>
+
+<br />
+
+<EditForm Model="Filter" OnSubmit="GetFilteredMessages" FormName="GetFilteredMessagesForm">
+    <div>
+        <label>
+            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Filter!.DateTimeFrom" />
+            <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Filter!.DateTimeTo" />
+        </label>
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</EditForm>
+
+<br />
+
+@if (_initialState)
+{
+    <p>There are no created filters.</p>
+}
+else if (!_initialState && !_isRequestSuccessful)
+{
+    <p>Unable to get messages. Please try again later.</p>
+}
+else if (_isRequestSuccessful)
+{
+    <ul>
+        @foreach (var message in _filteredMessages)
+        {
+            <li>@message.Timestamp: @message.Message (SerialNumber: @message.SerialNumber)</li>
+        }
+    </ul>
+}
+
+
+@code {
+    [SupplyParameterFromForm]
+    private MessageFilterModel? Filter { get; set; }
+
+    private List<MessageToGetModel> _filteredMessages = new();
+    private bool _isRequestSuccessful;
+    private bool _initialState = true;
+
+    protected override void OnInitialized()
+    {
+        Filter ??= new();
+        Logger.LogTrace("Page {PageName} initialized", nameof(Messages));
+    }
+
+    private async Task GetFilteredMessages()
+    {
+        if (Filter?.TimeRange is { } minutes)
+        {
+            var currentDate = DateTime.UtcNow;
+            Filter.DateTimeFrom = currentDate.AddMinutes(-minutes);
+            Filter.DateTimeTo = currentDate;
+        }
+
+        var (isSuccessCode, responseMessages) = await MessageClient.GetMessagesAsync(Filter?.DateTimeFrom, Filter?.DateTimeTo);
+
+        _isRequestSuccessful = isSuccessCode;
+        _initialState = false;
+        _filteredMessages = responseMessages;
+
+        Filter!.DateTimeFrom = null;
+        Filter!.DateTimeTo = null;
+    }
+
+
+    private async Task SetTimeIntervalTo5() =>
+        await FilterInterval(5);
+
+    private async Task SetTimeIntervalTo10() =>
+        await FilterInterval(10);
+
+    private async  Task SetTimeIntervalTo15() =>
+        await FilterInterval(15);
+
+    private async Task ClearFilters()
+    {
+        Logger.LogDebug("Clearing all filters");
+        Filter!.DateTimeFrom = null;
+        Filter.DateTimeTo = null;
+        Filter.TimeRange = null;
+        await GetFilteredMessages();
+    }
+
+    private async Task FilterInterval(int minutes)
+    {
+        Logger.LogDebug("Using TimeRange filter for {TimeRangeMinutes}", minutes);
+        Filter!.TimeRange = minutes;
+        await GetFilteredMessages();
+    }
+}

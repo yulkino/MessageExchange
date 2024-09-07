@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageExchange", "MessageExchange\MessageExchange.csproj", "{B8845DB2-AF71-43BA-B41F-580BF4B8F33B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagesServer", "MessagesServer\MessagesServer.csproj", "{B8845DB2-AF71-43BA-B41F-580BF4B8F33B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageClients", "MessageClients\MessageClients.csproj", "{C1B4CB2B-762F-4BA3-A624-CD6CD6AA0B42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagesClient", "MessagesClient\MessagesClient.csproj", "{C1B4CB2B-762F-4BA3-A624-CD6CD6AA0B42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

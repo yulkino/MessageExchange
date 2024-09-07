@@ -1,9 +1,9 @@
 services:
   server:
-    image: message_exchange_app
+    image: server
     build:
       context: .
-      dockerfile: MessageExchange/Dockerfile
+      dockerfile: MessagesServer/Dockerfile
     ports:
       - "8080:8080"
       - "8081:8081"  
@@ -16,10 +16,10 @@ services:
       - app-network
 
   clients:
-    image: message_clients_app
+    image: client
     build:
       context: .
-      dockerfile: MessageClients/Dockerfile
+      dockerfile: MessagesClient/Dockerfile
     ports:
       - "8082:8082"
       - "8083:8083"

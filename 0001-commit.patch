@@ -1,0 +1,1612 @@
+From 6e5484d718340b54a1cfe5661605f116c24d6a85 Mon Sep 17 00:00:00 2001
+From: BeeTwin <dan.botov@gmail.com>
+Date: Sat, 7 Sep 2024 17:37:22 +0400
+Subject: [PATCH] commit
+
+---
+ MessageClients/Dockerfile                     |  31 ----
+ .../Options/MessageExchangeOptions.cs         |   8 -
+ MessageExchange.sln                           |   4 +-
+ MessageExchange/AssemblyMarker.cs             |   5 -
+ .../Controllers/MessageController.cs          |  34 ----
+ MessageExchange/Dockerfile                    |  30 ----
+ MessageExchange/Hubs/IMessageHub.cs           |   6 -
+ MessageExchange/Hubs/MessageHub.cs            |  32 ----
+ .../MessageDaoMappingProfile.cs               |  14 --
+ .../MessageDtoMappingProfile.cs               |  14 --
+ MessageExchange/MessageExchange.http          |   6 -
+ .../Repositories/MessageRepository.cs         | 131 ---------------
+ MessageExchange/Services/IMessageService.cs   |   9 -
+ MessageExchange/Services/MessageService.cs    |  51 ------
+ .../.dockerignore                             |   0
+ .../Clients/IMessageClient.cs                 |   4 +-
+ .../Clients/MessageClient.cs                  |   4 +-
+ .../Components/App.razor                      |   4 +-
+ .../Components/Layout/MainLayout.razor        |   0
+ .../Components/Layout/MainLayout.razor.css    |   0
+ .../Components/Layout/NavMenu.razor           |   3 +-
+ .../Components/Layout/NavMenu.razor.css       |   0
+ .../Components/Pages/Error.razor              |   0
+ .../Components/Pages/Home.razor               |  19 +--
+ .../Components/Pages/Messages.razor           |  32 ++--
+ .../Components/Pages/RealTimeMessages.razor   |  13 +-
+ .../Components/Routes.razor                   |   0
+ .../Components/_Imports.razor                 |   4 +-
+ MessagesClient/Dockerfile                     |  24 +++
+ .../MessagesClient.csproj                     |   0
+ .../Models/MessageFilterModel.cs              |   2 +-
+ .../Models/MessageToGetModel.cs               |   4 +-
+ .../Models/MessageToSendModel.cs              |   5 +-
+ .../Options/MessageExchangeOptions.cs         |   8 +
+ {MessageClients => MessagesClient}/Program.cs |   7 +-
+ .../Properties/launchSettings.json            |   0
+ .../appsettings.Development.json              |   0
+ .../appsettings.json                          |   0
+ .../wwwroot/app.css                           |   0
+ .../wwwroot/bootstrap/bootstrap.min.css       |   0
+ .../wwwroot/bootstrap/bootstrap.min.css.map   |   0
+ .../wwwroot/favicon.png                       | Bin
+ .../Controllers/MessageController.cs          |  25 +++
+ .../DAOs/MessageDao.cs                        |   4 +-
+ .../DTOs/MessageToGetDto.cs                   |   2 +-
+ .../DTOs/MessageToSendDto.cs                  |   4 +-
+ MessagesServer/Dockerfile                     |  23 +++
+ MessagesServer/Hubs/IMessageHub.cs            |   6 +
+ MessagesServer/Hubs/MessageHub.cs             |  23 +++
+ MessagesServer/Mapping/MapperConfiguration.cs |  16 ++
+ .../MessagesServer.csproj                     |   2 +-
+ .../Program.cs                                |  16 +-
+ .../Properties/launchSettings.json            |   0
+ .../Repositories/IMessageRepository.cs        |   5 +-
+ .../Repositories/MessageRepository.cs         | 154 ++++++++++++++++++
+ MessagesServer/Services/IMessageService.cs    |   9 +
+ MessagesServer/Services/MessageService.cs     |  38 +++++
+ .../appsettings.Development.json              |   0
+ .../appsettings.json                          |   0
+ docker-compose.yml                            |   8 +-
+ 60 files changed, 395 insertions(+), 448 deletions(-)
+ delete mode 100644 MessageClients/Dockerfile
+ delete mode 100644 MessageClients/Options/MessageExchangeOptions.cs
+ delete mode 100644 MessageExchange/AssemblyMarker.cs
+ delete mode 100644 MessageExchange/Controllers/MessageController.cs
+ delete mode 100644 MessageExchange/Dockerfile
+ delete mode 100644 MessageExchange/Hubs/IMessageHub.cs
+ delete mode 100644 MessageExchange/Hubs/MessageHub.cs
+ delete mode 100644 MessageExchange/MappingProfiles/MessageDaoMappingProfile.cs
+ delete mode 100644 MessageExchange/MappingProfiles/MessageDtoMappingProfile.cs
+ delete mode 100644 MessageExchange/MessageExchange.http
+ delete mode 100644 MessageExchange/Repositories/MessageRepository.cs
+ delete mode 100644 MessageExchange/Services/IMessageService.cs
+ delete mode 100644 MessageExchange/Services/MessageService.cs
+ rename {MessageClients => MessagesClient}/.dockerignore (100%)
+ rename {MessageClients => MessagesClient}/Clients/IMessageClient.cs (79%)
+ rename {MessageClients => MessagesClient}/Clients/MessageClient.cs (95%)
+ rename {MessageClients => MessagesClient}/Components/App.razor (78%)
+ rename {MessageClients => MessagesClient}/Components/Layout/MainLayout.razor (100%)
+ rename {MessageClients => MessagesClient}/Components/Layout/MainLayout.razor.css (100%)
+ rename {MessageClients => MessagesClient}/Components/Layout/NavMenu.razor (94%)
+ rename {MessageClients => MessagesClient}/Components/Layout/NavMenu.razor.css (100%)
+ rename {MessageClients => MessagesClient}/Components/Pages/Error.razor (100%)
+ rename {MessageClients => MessagesClient}/Components/Pages/Home.razor (76%)
+ rename {MessageClients => MessagesClient}/Components/Pages/Messages.razor (80%)
+ rename {MessageClients => MessagesClient}/Components/Pages/RealTimeMessages.razor (78%)
+ rename {MessageClients => MessagesClient}/Components/Routes.razor (100%)
+ rename {MessageClients => MessagesClient}/Components/_Imports.razor (85%)
+ create mode 100644 MessagesClient/Dockerfile
+ rename MessageClients/MessageClients.csproj => MessagesClient/MessagesClient.csproj (100%)
+ rename {MessageClients => MessagesClient}/Models/MessageFilterModel.cs (89%)
+ rename {MessageClients => MessagesClient}/Models/MessageToGetModel.cs (79%)
+ rename {MessageClients => MessagesClient}/Models/MessageToSendModel.cs (75%)
+ create mode 100644 MessagesClient/Options/MessageExchangeOptions.cs
+ rename {MessageClients => MessagesClient}/Program.cs (88%)
+ rename {MessageClients => MessagesClient}/Properties/launchSettings.json (100%)
+ rename {MessageClients => MessagesClient}/appsettings.Development.json (100%)
+ rename {MessageClients => MessagesClient}/appsettings.json (100%)
+ rename {MessageClients => MessagesClient}/wwwroot/app.css (100%)
+ rename {MessageClients => MessagesClient}/wwwroot/bootstrap/bootstrap.min.css (100%)
+ rename {MessageClients => MessagesClient}/wwwroot/bootstrap/bootstrap.min.css.map (100%)
+ rename {MessageClients => MessagesClient}/wwwroot/favicon.png (100%)
+ create mode 100644 MessagesServer/Controllers/MessageController.cs
+ rename {MessageExchange => MessagesServer}/DAOs/MessageDao.cs (76%)
+ rename {MessageExchange => MessagesServer}/DTOs/MessageToGetDto.cs (90%)
+ rename {MessageExchange => MessagesServer}/DTOs/MessageToSendDto.cs (72%)
+ create mode 100644 MessagesServer/Dockerfile
+ create mode 100644 MessagesServer/Hubs/IMessageHub.cs
+ create mode 100644 MessagesServer/Hubs/MessageHub.cs
+ create mode 100644 MessagesServer/Mapping/MapperConfiguration.cs
+ rename MessageExchange/MessageExchange.csproj => MessagesServer/MessagesServer.csproj (91%)
+ rename {MessageExchange => MessagesServer}/Program.cs (71%)
+ rename {MessageExchange => MessagesServer}/Properties/launchSettings.json (100%)
+ rename {MessageExchange => MessagesServer}/Repositories/IMessageRepository.cs (77%)
+ create mode 100644 MessagesServer/Repositories/MessageRepository.cs
+ create mode 100644 MessagesServer/Services/IMessageService.cs
+ create mode 100644 MessagesServer/Services/MessageService.cs
+ rename {MessageExchange => MessagesServer}/appsettings.Development.json (100%)
+ rename {MessageExchange => MessagesServer}/appsettings.json (100%)
+
+diff --git a/MessageClients/Dockerfile b/MessageClients/Dockerfile
+deleted file mode 100644
+index 8d6cb1d..0000000
+--- a/MessageClients/Dockerfile
++++ /dev/null
+@@ -1,31 +0,0 @@
+-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+-
+-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+-USER app
+-WORKDIR /app
+-EXPOSE 8082
+-EXPOSE 8083
+-
+-
+-# This stage is used to build the service project
+-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+-ARG BUILD_CONFIGURATION=Release
+-
+-WORKDIR /src
+-COPY . .
+-
+-WORKDIR "/src/MessageClients"
+-RUN dotnet restore "./MessageClients.csproj"
+-RUN dotnet build "./MessageClients.csproj" -c $BUILD_CONFIGURATION -o /app/build
+-
+-# This stage is used to publish the service project to be copied to the final stage
+-FROM build AS publish
+-ARG BUILD_CONFIGURATION=Release
+-RUN dotnet publish "./MessageClients.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+-
+-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+-FROM base AS final
+-WORKDIR /app
+-COPY --from=publish /app/publish .
+-ENTRYPOINT ["dotnet", "MessageClients.dll"]
+\ No newline at end of file
+diff --git a/MessageClients/Options/MessageExchangeOptions.cs b/MessageClients/Options/MessageExchangeOptions.cs
+deleted file mode 100644
+index 67ee512..0000000
+--- a/MessageClients/Options/MessageExchangeOptions.cs
++++ /dev/null
+@@ -1,8 +0,0 @@
+-﻿using SimpleOptions;
+-
+-namespace MessageClients.Options;
+-
+-public class MessageExchangeOptions : ConfigurationOptions<MessageExchangeOptions>
+-{
+-    public string BaseAddress { get; set; } = string.Empty;
+-}
+diff --git a/MessageExchange.sln b/MessageExchange.sln
+index 1d94a14..6c749e1 100644
+--- a/MessageExchange.sln
++++ b/MessageExchange.sln
+@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
+ # Visual Studio Version 17
+ VisualStudioVersion = 17.11.35219.272
+ MinimumVisualStudioVersion = 10.0.40219.1
+-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageExchange", "MessageExchange\MessageExchange.csproj", "{B8845DB2-AF71-43BA-B41F-580BF4B8F33B}"
++Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagesServer", "MessagesServer\MessagesServer.csproj", "{B8845DB2-AF71-43BA-B41F-580BF4B8F33B}"
+ EndProject
+-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageClients", "MessageClients\MessageClients.csproj", "{C1B4CB2B-762F-4BA3-A624-CD6CD6AA0B42}"
++Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagesClient", "MessagesClient\MessagesClient.csproj", "{C1B4CB2B-762F-4BA3-A624-CD6CD6AA0B42}"
+ EndProject
+ Global
+ 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+diff --git a/MessageExchange/AssemblyMarker.cs b/MessageExchange/AssemblyMarker.cs
+deleted file mode 100644
+index 5236777..0000000
+--- a/MessageExchange/AssemblyMarker.cs
++++ /dev/null
+@@ -1,5 +0,0 @@
+-using AssemblyMarkers;
+-
+-namespace MessageExchange;
+-
+-public abstract class AssemblyMarker : AssemblyMarker<AssemblyMarker>;
+\ No newline at end of file
+diff --git a/MessageExchange/Controllers/MessageController.cs b/MessageExchange/Controllers/MessageController.cs
+deleted file mode 100644
+index a921d93..0000000
+--- a/MessageExchange/Controllers/MessageController.cs
++++ /dev/null
+@@ -1,34 +0,0 @@
+-using MessageExchange.DTOs;
+-using MessageExchange.Services;
+-using Microsoft.AspNetCore.Mvc;
+-
+-namespace MessageExchange.Controllers;
+-[ApiController]
+-[Route("[controller]")]
+-public class MessageController : ControllerBase
+-{
+-    private readonly IMessageService _messageService;
+-    private readonly ILogger<MessageController> _logger;
+-
+-    public MessageController(IMessageService messageService, ILogger<MessageController> logger)
+-    {
+-        _messageService = messageService;
+-        _logger = logger;
+-    }
+-
+-    [HttpPost("send")]
+-    public async Task<IActionResult> PostMessage([FromBody] MessageToSendDto message)
+-    {
+-        _logger.LogInformation("Message to post: {Message}", message);
+-        await _messageService.SendMessage(message);
+-        return NoContent();
+-    }
+-
+-    [HttpGet]
+-    public async Task<ActionResult<List<MessageToGetDto>>> GetMessages([FromQuery] DateTime? from, [FromQuery] DateTime? to)
+-    {
+-        _logger.LogInformation("Given interval: {From}-{To}", from, to);
+-        var messages = await _messageService.GetMessages(from, to);
+-        return Ok(messages);
+-    }
+-}
+diff --git a/MessageExchange/Dockerfile b/MessageExchange/Dockerfile
+deleted file mode 100644
+index 8380973..0000000
+--- a/MessageExchange/Dockerfile
++++ /dev/null
+@@ -1,30 +0,0 @@
+-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+-
+-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+-USER app
+-WORKDIR /app
+-EXPOSE 8080
+-EXPOSE 8081
+-
+-
+-# This stage is used to build the service project
+-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+-ARG BUILD_CONFIGURATION=Release
+-
+-WORKDIR /src
+-COPY . .
+-
+-WORKDIR "/src/MessageExchange"
+-RUN dotnet restore "./MessageExchange.csproj"
+-RUN dotnet build "./MessageExchange.csproj" -c $BUILD_CONFIGURATION -o /app/build
+-
+-# This stage is used to publish the service project to be copied to the final stage
+-FROM build AS publish
+-RUN dotnet publish "./MessageExchange.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+-
+-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+-FROM base AS final
+-WORKDIR /app
+-COPY --from=publish /app/publish .
+-ENTRYPOINT ["dotnet", "MessageExchange.dll"]
+\ No newline at end of file
+diff --git a/MessageExchange/Hubs/IMessageHub.cs b/MessageExchange/Hubs/IMessageHub.cs
+deleted file mode 100644
+index 01f3a48..0000000
+--- a/MessageExchange/Hubs/IMessageHub.cs
++++ /dev/null
+@@ -1,6 +0,0 @@
+-﻿namespace MessageExchange.Hubs;
+-
+-public interface IMessageHub
+-{
+-    Task SendMessageToAll(string message, DateTime timespan, Guid serialNumber);
+-}
+diff --git a/MessageExchange/Hubs/MessageHub.cs b/MessageExchange/Hubs/MessageHub.cs
+deleted file mode 100644
+index 42f3540..0000000
+--- a/MessageExchange/Hubs/MessageHub.cs
++++ /dev/null
+@@ -1,32 +0,0 @@
+-﻿using Microsoft.AspNetCore.SignalR;
+-
+-namespace MessageExchange.Hubs;
+-
+-public class MessageHub : Hub, IMessageHub
+-{
+-    private readonly IHubContext<MessageHub> _hubContext;
+-    private readonly ILogger<MessageHub> _logger;
+-
+-    public MessageHub(IHubContext<MessageHub> hubContext, ILogger<MessageHub> logger)
+-    {
+-        _hubContext = hubContext;
+-        _logger = logger;
+-    }
+-
+-    public async Task SendMessageToAll(string message, DateTime timespan, Guid serialNumber)
+-    {
+-        _logger.LogInformation("Posting {Message} with {Timespan} and {SerialNumber}", message, timespan, serialNumber);
+-
+-        try
+-        {
+-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message, timespan, serialNumber);
+-        }
+-        catch(Exception ex)
+-        {
+-            _logger.LogError("During posting message error occurred: {Error}", ex);
+-            throw;
+-        }
+-
+-        _logger.LogInformation("Message posted successfully");
+-    }
+-}
+diff --git a/MessageExchange/MappingProfiles/MessageDaoMappingProfile.cs b/MessageExchange/MappingProfiles/MessageDaoMappingProfile.cs
+deleted file mode 100644
+index 6f1d404..0000000
+--- a/MessageExchange/MappingProfiles/MessageDaoMappingProfile.cs
++++ /dev/null
+@@ -1,14 +0,0 @@
+-﻿using AutoMapper;
+-using MessageExchange.DAOs;
+-using MessageExchange.DTOs;
+-
+-namespace MessageExchange.MappingProfiles;
+-
+-public class MessageDaoMappingProfile : Profile
+-{
+-    public MessageDaoMappingProfile()
+-    {
+-        CreateMap<MessageDao, MessageToGetDto>()
+-            .ForMember(x => x.Message, o => o.MapFrom(x => x.Content));
+-    }
+-}
+diff --git a/MessageExchange/MappingProfiles/MessageDtoMappingProfile.cs b/MessageExchange/MappingProfiles/MessageDtoMappingProfile.cs
+deleted file mode 100644
+index 8ecadfd..0000000
+--- a/MessageExchange/MappingProfiles/MessageDtoMappingProfile.cs
++++ /dev/null
+@@ -1,14 +0,0 @@
+-﻿using AutoMapper;
+-using MessageExchange.DAOs;
+-using MessageExchange.DTOs;
+-
+-namespace MessageExchange.MappingProfiles;
+-
+-public class MessageDtoMappingProfile : Profile
+-{
+-    public MessageDtoMappingProfile()
+-    {
+-        CreateMap<MessageToSendDto, MessageDao>()
+-            .ForMember(x => x.Content, o => o.MapFrom(x => x.Message));
+-    }
+-}
+diff --git a/MessageExchange/MessageExchange.http b/MessageExchange/MessageExchange.http
+deleted file mode 100644
+index bb983ad..0000000
+--- a/MessageExchange/MessageExchange.http
++++ /dev/null
+@@ -1,6 +0,0 @@
+-@MessageExchange_HostAddress = http://localhost:5092
+-
+-GET {{MessageExchange_HostAddress}}/weatherforecast/
+-Accept: application/json
+-
+-###
+diff --git a/MessageExchange/Repositories/MessageRepository.cs b/MessageExchange/Repositories/MessageRepository.cs
+deleted file mode 100644
+index 7af2e85..0000000
+--- a/MessageExchange/Repositories/MessageRepository.cs
++++ /dev/null
+@@ -1,131 +0,0 @@
+-﻿using MessageExchange.DAOs;
+-using Npgsql;
+-
+-namespace MessageExchange.Repositories;
+-
+-public class MessageRepository : IMessageRepository
+-{
+-    private readonly NpgsqlConnection _connection;
+-    private readonly ILogger<MessageRepository> _logger;
+-
+-    public MessageRepository(NpgsqlConnection connection, ILogger<MessageRepository> logger)
+-    {
+-        _connection = connection;
+-        _logger = logger;
+-    }
+-
+-    public async Task AddMessageAsync(MessageDao message)
+-    {
+-        if (message.Content.Length > 128)
+-        {
+-            _logger.LogWarning("Message exceed 128 characters, length: {ContentLength}", message.Content.Length);
+-            throw new InvalidOperationException("Message exceed 128 characters");
+-        }
+-
+-        var query = "INSERT INTO Messages (Content, Timestamp, SerialNumber) VALUES (@content, @timestamp, @serialNumber)";
+-        using var cmd = new NpgsqlCommand(query, _connection);
+-
+-        cmd.Parameters.AddWithValue("content", message.Content);
+-        cmd.Parameters.AddWithValue("timestamp", message.Timestamp);
+-        cmd.Parameters.AddWithValue("serialNumber", message.SerialNumber);
+-        _logger.LogDebug("Parameters to save message in DB: {NpgsqlParameters}", cmd.Parameters);
+-
+-        try
+-        {
+-            await _connection.OpenAsync();
+-            var result = await cmd.ExecuteNonQueryAsync();
+-            _logger.LogInformation("Query was executed successfully");
+-        }
+-        catch(Exception ex)
+-        {
+-            _logger.LogError("Query was executed with {Error}", ex);
+-            throw;
+-        }
+-        finally
+-        {
+-            await _connection.CloseAsync();
+-        }
+-    }
+-
+-    public async Task<List<MessageDao>> GetMessagesForPeriodAsync(DateTime from, DateTime to)
+-    {
+-        _logger.LogInformation("Getting messages for interval {From}-{To}", from, to);
+-        var query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages WHERE Timestamp BETWEEN @from AND @to";
+-        using var cmd = new NpgsqlCommand(query, _connection);
+-
+-        cmd.Parameters.AddWithValue("from", from);
+-        cmd.Parameters.AddWithValue("to", to);
+-        _logger.LogDebug("Parameters to get message from DB: {NpgsqlParameters}", cmd.Parameters);
+-
+-        return await ReadMessagesAsync(cmd); ;
+-    }
+-
+-    public async Task<List<MessageDao>> GetMessagesAfterAsync(DateTime from)
+-    {
+-        _logger.LogInformation("Getting messages for min date: {From}", from);
+-        var query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages WHERE Timestamp >= @from";
+-
+-        using var cmd = new NpgsqlCommand(query, _connection);
+-        cmd.Parameters.AddWithValue("from", from);
+-        _logger.LogDebug("Parameters to get message from DB: {NpgsqlParameters}", cmd.Parameters);
+-
+-        return await ReadMessagesAsync(cmd);
+-    }
+-
+-    public async Task<List<MessageDao>> GetMessagesBeforeAsync(DateTime to)
+-    {
+-        _logger.LogInformation("Getting messages for max date: {To}", to);
+-        var query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages WHERE Timestamp <= @to";
+-
+-        using var cmd = new NpgsqlCommand(query, _connection);
+-        cmd.Parameters.AddWithValue("to", to);
+-        _logger.LogDebug("Parameters to get message from DB: {NpgsqlParameters}", cmd.Parameters);
+-
+-        return await ReadMessagesAsync(cmd); ;
+-    }
+-
+-    public async Task<List<MessageDao>> GetAllMessagesAsync()
+-    {
+-        _logger.LogInformation("Getting all messages");
+-        var query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages";
+-
+-        using var cmd = new NpgsqlCommand(query, _connection);
+-
+-        return await ReadMessagesAsync(cmd);
+-    }
+-
+-    private async Task<List<MessageDao>> ReadMessagesAsync(NpgsqlCommand cmd)
+-    {
+-        var messages = new List<MessageDao>();
+-
+-        try
+-        {
+-            await _connection.OpenAsync();
+-            using var reader = await cmd.ExecuteReaderAsync();
+-            while (await reader.ReadAsync())
+-            {
+-                messages.Add(new MessageDao
+-                {
+-                    Id = reader.GetGuid(0),
+-                    Content = reader.GetString(1),
+-                    Timestamp = reader.GetDateTime(2),
+-                    SerialNumber = reader.GetGuid(3)
+-                });
+-            }
+-
+-            _logger.LogInformation("Messages received successfully");
+-        }
+-        catch(Exception ex)
+-        {
+-            _logger.LogError("Messages received with error: {Error}", ex);
+-            throw;
+-        }
+-        finally
+-        {
+-            await _connection.CloseAsync();
+-        }
+-
+-        _logger.LogDebug("Got {MessageCount} messages", messages.Count);
+-        return messages;
+-    }
+-}
+diff --git a/MessageExchange/Services/IMessageService.cs b/MessageExchange/Services/IMessageService.cs
+deleted file mode 100644
+index 8129736..0000000
+--- a/MessageExchange/Services/IMessageService.cs
++++ /dev/null
+@@ -1,9 +0,0 @@
+-﻿using MessageExchange.DTOs;
+-
+-namespace MessageExchange.Services;
+-
+-public interface IMessageService
+-{
+-    Task SendMessage(MessageToSendDto message);
+-    Task<List<MessageToGetDto>> GetMessages(DateTime? from, DateTime? to);
+-}
+diff --git a/MessageExchange/Services/MessageService.cs b/MessageExchange/Services/MessageService.cs
+deleted file mode 100644
+index 22b0853..0000000
+--- a/MessageExchange/Services/MessageService.cs
++++ /dev/null
+@@ -1,51 +0,0 @@
+-﻿using AutoMapper;
+-using MessageExchange.DAOs;
+-using MessageExchange.DTOs;
+-using MessageExchange.Hubs;
+-using MessageExchange.Repositories;
+-
+-namespace MessageExchange.Services;
+-
+-public class MessageService : IMessageService
+-{
+-    private readonly IMessageRepository _messageRepository;
+-    private readonly IMessageHub _messageHub;
+-    private readonly IMapper _mapper;
+-    private readonly ILogger<MessageService> _logger;
+-
+-    public MessageService(IMessageRepository messageRepository, IMessageHub messageHub,
+-        IMapper mapper, ILogger<MessageService> logger)
+-    {
+-        _messageRepository = messageRepository;
+-        _messageHub = messageHub;
+-        _mapper = mapper;
+-        _logger = logger;
+-    }
+-
+-    public async Task SendMessage(MessageToSendDto message)
+-    {
+-        var messageDao = _mapper.Map<MessageDao>(message);
+-
+-        messageDao.Timestamp = DateTime.UtcNow;
+-        _logger.LogDebug("Assigned message Timestamp as UTC: {UtcDateTime}", messageDao.Timestamp);
+-        await _messageRepository.AddMessageAsync(messageDao);
+-        await _messageHub.SendMessageToAll(messageDao.Content, messageDao.Timestamp, messageDao.SerialNumber);
+-    }
+-
+-    public async Task<List<MessageToGetDto>> GetMessages(DateTime? from, DateTime? to)
+-    {
+-        _logger.LogInformation("Choosing interval type for getting messages");
+-        List<MessageDao> messages;
+-
+-        messages = (from, to) switch
+-        {
+-            (null,              null)            => await _messageRepository.GetAllMessagesAsync(),
+-            (DateTime dateFrom, null)            => await _messageRepository.GetMessagesAfterAsync(dateFrom),
+-            (null,              DateTime dateTo) => await _messageRepository.GetMessagesBeforeAsync(dateTo),
+-            (DateTime dateFrom, DateTime dateTo) => await _messageRepository.GetMessagesForPeriodAsync(dateFrom, dateTo)
+-        };
+-
+-        var messagesDto = _mapper.Map<List<MessageToGetDto>>(messages);
+-        return messagesDto;
+-    }
+-}
+diff --git a/MessageClients/.dockerignore b/MessagesClient/.dockerignore
+similarity index 100%
+rename from MessageClients/.dockerignore
+rename to MessagesClient/.dockerignore
+diff --git a/MessageClients/Clients/IMessageClient.cs b/MessagesClient/Clients/IMessageClient.cs
+similarity index 79%
+rename from MessageClients/Clients/IMessageClient.cs
+rename to MessagesClient/Clients/IMessageClient.cs
+index 3def546..e74e319 100644
+--- a/MessageClients/Clients/IMessageClient.cs
++++ b/MessagesClient/Clients/IMessageClient.cs
+@@ -1,6 +1,6 @@
+-﻿using MessageClients.Models;
++﻿using MessagesClient.Models;
+ 
+-namespace MessageClients.Clients;
++namespace MessagesClient.Clients;
+ 
+ public interface IMessageClient
+ {
+diff --git a/MessageClients/Clients/MessageClient.cs b/MessagesClient/Clients/MessageClient.cs
+similarity index 95%
+rename from MessageClients/Clients/MessageClient.cs
+rename to MessagesClient/Clients/MessageClient.cs
+index a2530b8..a9d99b3 100644
+--- a/MessageClients/Clients/MessageClient.cs
++++ b/MessagesClient/Clients/MessageClient.cs
+@@ -1,6 +1,6 @@
+-﻿using MessageClients.Models;
++﻿using MessagesClient.Models;
+ 
+-namespace MessageClients.Clients;
++namespace MessagesClient.Clients;
+ 
+ public class MessageClient(HttpClient httpClient, ILogger<MessageClient> logger) : IMessageClient
+ {
+diff --git a/MessageClients/Components/App.razor b/MessagesClient/Components/App.razor
+similarity index 78%
+rename from MessageClients/Components/App.razor
+rename to MessagesClient/Components/App.razor
+index 233fd7b..bf9cf8d 100644
+--- a/MessageClients/Components/App.razor
++++ b/MessagesClient/Components/App.razor
+@@ -7,13 +7,13 @@
+     <base href="/" />
+     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
+     <link rel="stylesheet" href="app.css" />
+-    <link rel="stylesheet" href="MessageClients.styles.css" />
++    <link rel="stylesheet" href="MessagesClient.styles.css" />
+     <link rel="icon" type="image/png" href="favicon.png" />
+     <HeadOutlet />
+ </head>
+ 
+ <body>
+-    <Routes @rendermode=RenderMode.InteractiveServer />
++    <Routes @rendermode="InteractiveServer" />
+     <script src="_framework/blazor.web.js"></script>
+ </body>
+ 
+diff --git a/MessageClients/Components/Layout/MainLayout.razor b/MessagesClient/Components/Layout/MainLayout.razor
+similarity index 100%
+rename from MessageClients/Components/Layout/MainLayout.razor
+rename to MessagesClient/Components/Layout/MainLayout.razor
+diff --git a/MessageClients/Components/Layout/MainLayout.razor.css b/MessagesClient/Components/Layout/MainLayout.razor.css
+similarity index 100%
+rename from MessageClients/Components/Layout/MainLayout.razor.css
+rename to MessagesClient/Components/Layout/MainLayout.razor.css
+diff --git a/MessageClients/Components/Layout/NavMenu.razor b/MessagesClient/Components/Layout/NavMenu.razor
+similarity index 94%
+rename from MessageClients/Components/Layout/NavMenu.razor
+rename to MessagesClient/Components/Layout/NavMenu.razor
+index 8cdebc1..05c6257 100644
+--- a/MessageClients/Components/Layout/NavMenu.razor
++++ b/MessagesClient/Components/Layout/NavMenu.razor
+@@ -1,6 +1,6 @@
+ ﻿<div class="top-row ps-3 navbar navbar-dark">
+     <div class="container-fluid">
+-        <a class="navbar-brand" href="">MessageClients</a>
++        <a class="navbar-brand" href="">MessagesClient</a>
+     </div>
+ </div>
+ 
+@@ -27,4 +27,3 @@
+         </div>
+     </nav>
+ </div>
+-
+diff --git a/MessageClients/Components/Layout/NavMenu.razor.css b/MessagesClient/Components/Layout/NavMenu.razor.css
+similarity index 100%
+rename from MessageClients/Components/Layout/NavMenu.razor.css
+rename to MessagesClient/Components/Layout/NavMenu.razor.css
+diff --git a/MessageClients/Components/Pages/Error.razor b/MessagesClient/Components/Pages/Error.razor
+similarity index 100%
+rename from MessageClients/Components/Pages/Error.razor
+rename to MessagesClient/Components/Pages/Error.razor
+diff --git a/MessageClients/Components/Pages/Home.razor b/MessagesClient/Components/Pages/Home.razor
+similarity index 76%
+rename from MessageClients/Components/Pages/Home.razor
+rename to MessagesClient/Components/Pages/Home.razor
+index 37b3408..3ccac93 100644
+--- a/MessageClients/Components/Pages/Home.razor
++++ b/MessagesClient/Components/Pages/Home.razor
+@@ -1,6 +1,6 @@
+ ﻿@page "/"
+-@using MessageClients.Models
+-@using MessageClients.Clients
++@using MessagesClient.Clients
++@using MessagesClient.Models
+ @inject IMessageClient MessageClient
+ @inject ILogger<Home> Logger
+ 
+@@ -10,7 +10,7 @@
+ 
+ <br />
+ 
+-<EditForm Model="MessageModel" OnSubmit="SendMessage" FormName="SendForm">
++<EditForm Model="MessageModel" OnSubmit="SendMessage" FormName="SendMessageForm">
+     <DataAnnotationsValidator />
+     <div>
+         <label>
+@@ -26,11 +26,11 @@
+ 
+ <br />
+ 
+-@if (!InitialState && !IsRequestSuccessful)
++@if (!_initialState && !_isRequestSuccessful)
+ {
+     <p>Unable to send messages. Please try again later.</p>
+ }
+-else if (IsRequestSuccessful)
++else if (_isRequestSuccessful)
+ {
+     <div class="alert alert-success">
+         "Message sent successfully!"
+@@ -41,8 +41,8 @@ else if (IsRequestSuccessful)
+     [SupplyParameterFromForm]
+     public MessageToSendModel? MessageModel { get; set; }
+ 
+-    private bool IsRequestSuccessful;
+-    private bool InitialState = true;
++    private bool _isRequestSuccessful;
++    private bool _initialState = true;
+ 
+ 
+     protected override void OnInitialized()
+@@ -59,9 +59,8 @@ else if (IsRequestSuccessful)
+             return;
+         }
+ 
+-        IsRequestSuccessful = await MessageClient.SendMessageAsync(MessageModel);
+-        InitialState = false;
++        _isRequestSuccessful = await MessageClient.SendMessageAsync(MessageModel);
++        _initialState = false;
+         MessageModel = new MessageToSendModel();
+     }
+ }
+-
+diff --git a/MessageClients/Components/Pages/Messages.razor b/MessagesClient/Components/Pages/Messages.razor
+similarity index 80%
+rename from MessageClients/Components/Pages/Messages.razor
+rename to MessagesClient/Components/Pages/Messages.razor
+index c9d15e1..3c699c6 100644
+--- a/MessageClients/Components/Pages/Messages.razor
++++ b/MessagesClient/Components/Pages/Messages.razor
+@@ -1,6 +1,6 @@
+ ﻿@page "/messages"
+-@using MessageClients.Models
+-@using MessageClients.Clients
++@using MessagesClient.Clients
++@using MessagesClient.Models
+ @inject IMessageClient MessageClient
+ @inject ILogger<Messages> Logger
+ 
+@@ -19,11 +19,11 @@
+ 
+ <br />
+ 
+-<text>Or choose mannualy dates with time:</text>
++<text>Or choose manually dates with time:</text>
+ 
+ <br />
+ 
+-<EditForm Model="Filter" OnSubmit="GetFilteredMessages" FormName="FilterForm">
++<EditForm Model="Filter" OnSubmit="GetFilteredMessages" FormName="GetFilteredMessagesForm">
+     <div>
+         <label>
+             <InputDate Type="InputDateType.DateTimeLocal" @bind-Value="Filter!.DateTimeFrom" />
+@@ -37,18 +37,18 @@
+ 
+ <br />
+ 
+-@if (InitialState)
++@if (_initialState)
+ {
+     <p>There are no created filters.</p>
+ }
+-else if (!InitialState && !IsRequestSuccessful)
++else if (!_initialState && !_isRequestSuccessful)
+ {
+     <p>Unable to get messages. Please try again later.</p>
+ }
+-else if (IsRequestSuccessful)
++else if (_isRequestSuccessful)
+ {
+     <ul>
+-        @foreach (var message in FilteredMessages)
++        @foreach (var message in _filteredMessages)
+         {
+             <li>@message.Timestamp: @message.Message (SerialNumber: @message.SerialNumber)</li>
+         }
+@@ -60,9 +60,9 @@ else if (IsRequestSuccessful)
+     [SupplyParameterFromForm]
+     private MessageFilterModel? Filter { get; set; }
+ 
+-    private List<MessageToGetModel> FilteredMessages = new();
+-    private bool IsRequestSuccessful;
+-    private bool InitialState = true;
++    private List<MessageToGetModel> _filteredMessages = new();
++    private bool _isRequestSuccessful;
++    private bool _initialState = true;
+ 
+     protected override void OnInitialized()
+     {
+@@ -72,7 +72,7 @@ else if (IsRequestSuccessful)
+ 
+     private async Task GetFilteredMessages()
+     {
+-        if (Filter?.TimeRange is int minutes)
++        if (Filter?.TimeRange is { } minutes)
+         {
+             var currentDate = DateTime.UtcNow;
+             Filter.DateTimeFrom = currentDate.AddMinutes(-minutes);
+@@ -81,9 +81,9 @@ else if (IsRequestSuccessful)
+ 
+         var (isSuccessCode, responseMessages) = await MessageClient.GetMessagesAsync(Filter?.DateTimeFrom, Filter?.DateTimeTo);
+ 
+-        IsRequestSuccessful = isSuccessCode;
+-        InitialState = false;
+-        FilteredMessages = responseMessages;
++        _isRequestSuccessful = isSuccessCode;
++        _initialState = false;
++        _filteredMessages = responseMessages;
+ 
+         Filter!.DateTimeFrom = null;
+         Filter!.DateTimeTo = null;
+@@ -114,4 +114,4 @@ else if (IsRequestSuccessful)
+         Filter!.TimeRange = minutes;
+         await GetFilteredMessages();
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/MessageClients/Components/Pages/RealTimeMessages.razor b/MessagesClient/Components/Pages/RealTimeMessages.razor
+similarity index 78%
+rename from MessageClients/Components/Pages/RealTimeMessages.razor
+rename to MessagesClient/Components/Pages/RealTimeMessages.razor
+index 68a4e0b..20e1b94 100644
+--- a/MessageClients/Components/Pages/RealTimeMessages.razor
++++ b/MessagesClient/Components/Pages/RealTimeMessages.razor
+@@ -1,6 +1,5 @@
+ ﻿@page "/real-time-messages"
+-
+-@using MessageClients.Models
++@using MessagesClient.Models
+ @using Microsoft.AspNetCore.SignalR.Client
+ @inject HubConnection HubConnection
+ @inject ILogger<RealTimeMessages> Logger
+@@ -9,27 +8,27 @@
+ 
+ <br />
+ 
+-@if (messages.Count == 0)
++@if (_messages.Count == 0)
+ {
+     <p>There are no messages yet.</p>
+ }
+ 
+ <ul id="messagesList">
+-    @foreach (var message in messages)
++    @foreach (var message in _messages)
+     {
+         <li>@message.Timestamp: @message.Message (SerialNumber: @message.SerialNumber)</li>
+     }
+ </ul>
+ 
+ @code {
+-    private List<MessageToGetModel> messages = new();
++    private readonly List<MessageToGetModel> _messages = new();
+ 
+     protected override async Task OnInitializedAsync()
+     {
+         Logger.LogDebug("Initializing the web socket connection...");
+         HubConnection.On<string, DateTime, Guid>("ReceiveMessage", (content, timestamp, serialNumber) =>
+         {
+-            messages.Add(new MessageToGetModel
++            _messages.Add(new MessageToGetModel
+             {
+                 Message = content,
+                 Timestamp = timestamp,
+@@ -42,8 +41,6 @@
+         Logger.LogTrace("Page {PageName} initialized", nameof(RealTimeMessages));
+     }
+ 
+-    public bool IsConnected => HubConnection!.State == HubConnectionState.Connected;
+-
+     public async ValueTask DisposeAsync()
+     {
+         await HubConnection.DisposeAsync();
+diff --git a/MessageClients/Components/Routes.razor b/MessagesClient/Components/Routes.razor
+similarity index 100%
+rename from MessageClients/Components/Routes.razor
+rename to MessagesClient/Components/Routes.razor
+diff --git a/MessageClients/Components/_Imports.razor b/MessagesClient/Components/_Imports.razor
+similarity index 85%
+rename from MessageClients/Components/_Imports.razor
+rename to MessagesClient/Components/_Imports.razor
+index 6470732..efdb5e6 100644
+--- a/MessageClients/Components/_Imports.razor
++++ b/MessagesClient/Components/_Imports.razor
+@@ -6,5 +6,5 @@
+ @using static Microsoft.AspNetCore.Components.Web.RenderMode
+ @using Microsoft.AspNetCore.Components.Web.Virtualization
+ @using Microsoft.JSInterop
+-@using MessageClients
+-@using MessageClients.Components
++@using MessagesClient
++@using MessagesClient.Components
+diff --git a/MessagesClient/Dockerfile b/MessagesClient/Dockerfile
+new file mode 100644
+index 0000000..7763d14
+--- /dev/null
++++ b/MessagesClient/Dockerfile
+@@ -0,0 +1,24 @@
++FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
++USER app
++WORKDIR /app
++EXPOSE 8082
++EXPOSE 8083
++
++FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
++ARG BUILD_CONFIGURATION=Release
++
++WORKDIR /src
++COPY . .
++
++WORKDIR "/src/MessagesClient"
++RUN dotnet restore "./MessagesClient.csproj"
++RUN dotnet build "./MessagesClient.csproj" -c $BUILD_CONFIGURATION -o /app/build
++
++FROM build AS publish
++ARG BUILD_CONFIGURATION=Release
++RUN dotnet publish "./MessagesClient.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
++
++FROM base AS final
++WORKDIR /app
++COPY --from=publish /app/publish .
++ENTRYPOINT ["dotnet", "MessagesClient.dll"]
+diff --git a/MessageClients/MessageClients.csproj b/MessagesClient/MessagesClient.csproj
+similarity index 100%
+rename from MessageClients/MessageClients.csproj
+rename to MessagesClient/MessagesClient.csproj
+diff --git a/MessageClients/Models/MessageFilterModel.cs b/MessagesClient/Models/MessageFilterModel.cs
+similarity index 89%
+rename from MessageClients/Models/MessageFilterModel.cs
+rename to MessagesClient/Models/MessageFilterModel.cs
+index bb16b3e..27a16ad 100644
+--- a/MessageClients/Models/MessageFilterModel.cs
++++ b/MessagesClient/Models/MessageFilterModel.cs
+@@ -1,4 +1,4 @@
+-﻿namespace MessageClients.Models;
++﻿namespace MessagesClient.Models;
+ 
+ public class MessageFilterModel
+ {
+diff --git a/MessageClients/Models/MessageToGetModel.cs b/MessagesClient/Models/MessageToGetModel.cs
+similarity index 79%
+rename from MessageClients/Models/MessageToGetModel.cs
+rename to MessagesClient/Models/MessageToGetModel.cs
+index 99961fd..72ad8d2 100644
+--- a/MessageClients/Models/MessageToGetModel.cs
++++ b/MessagesClient/Models/MessageToGetModel.cs
+@@ -1,11 +1,11 @@
+ ﻿using System.ComponentModel.DataAnnotations;
+ 
+-namespace MessageClients.Models;
++namespace MessagesClient.Models;
+ 
+ public class MessageToGetModel
+ {
+     [Required]
+-    public string Message { get; set; }
++    public string Message { get; set; } = string.Empty;
+ 
+     [Required]
+     public DateTime Timestamp { get; set; }
+diff --git a/MessageClients/Models/MessageToSendModel.cs b/MessagesClient/Models/MessageToSendModel.cs
+similarity index 75%
+rename from MessageClients/Models/MessageToSendModel.cs
+rename to MessagesClient/Models/MessageToSendModel.cs
+index 523f998..8b8cd1d 100644
+--- a/MessageClients/Models/MessageToSendModel.cs
++++ b/MessagesClient/Models/MessageToSendModel.cs
+@@ -1,15 +1,14 @@
+ ﻿using System.ComponentModel.DataAnnotations;
+ 
+-namespace MessageClients.Models;
++namespace MessagesClient.Models;
+ 
+ public class MessageToSendModel
+ {
+     [Required, MaxLength(128)]
+-    public string Message { get; set; }
++    public string Message { get; set; } = string.Empty;
+ 
+     public Guid SerialNumber { get; } = Guid.NewGuid();
+ 
+     public override string ToString() =>
+         $"Message: {Message}; (SerialNumber: {SerialNumber})";
+ }
+-
+diff --git a/MessagesClient/Options/MessageExchangeOptions.cs b/MessagesClient/Options/MessageExchangeOptions.cs
+new file mode 100644
+index 0000000..71f299f
+--- /dev/null
++++ b/MessagesClient/Options/MessageExchangeOptions.cs
+@@ -0,0 +1,8 @@
++﻿using SimpleOptions;
++
++namespace MessagesClient.Options;
++
++public sealed class MessageExchangeOptions : ConfigurationOptions<MessageExchangeOptions>
++{
++    public string BaseAddress { get; set; } = string.Empty;
++}
+diff --git a/MessageClients/Program.cs b/MessagesClient/Program.cs
+similarity index 88%
+rename from MessageClients/Program.cs
+rename to MessagesClient/Program.cs
+index 886329e..14989d1 100644
+--- a/MessageClients/Program.cs
++++ b/MessagesClient/Program.cs
+@@ -1,6 +1,6 @@
+-using MessageClients.Clients;
+-using MessageClients.Components;
+-using MessageClients.Options;
++using MessagesClient.Clients;
++using MessagesClient.Components;
++using MessagesClient.Options;
+ using Microsoft.AspNetCore.SignalR.Client;
+ using SimpleOptions.Configuration;
+ 
+@@ -27,7 +27,6 @@ builder.Services.AddScoped(_ => new HubConnectionBuilder()
+ 
+ var app = builder.Build();
+ 
+-// Configure the HTTP request pipeline.
+ if (!app.Environment.IsDevelopment())
+ {
+     app.UseExceptionHandler("/Error", createScopeForErrors: true);
+diff --git a/MessageClients/Properties/launchSettings.json b/MessagesClient/Properties/launchSettings.json
+similarity index 100%
+rename from MessageClients/Properties/launchSettings.json
+rename to MessagesClient/Properties/launchSettings.json
+diff --git a/MessageClients/appsettings.Development.json b/MessagesClient/appsettings.Development.json
+similarity index 100%
+rename from MessageClients/appsettings.Development.json
+rename to MessagesClient/appsettings.Development.json
+diff --git a/MessageClients/appsettings.json b/MessagesClient/appsettings.json
+similarity index 100%
+rename from MessageClients/appsettings.json
+rename to MessagesClient/appsettings.json
+diff --git a/MessageClients/wwwroot/app.css b/MessagesClient/wwwroot/app.css
+similarity index 100%
+rename from MessageClients/wwwroot/app.css
+rename to MessagesClient/wwwroot/app.css
+diff --git a/MessageClients/wwwroot/bootstrap/bootstrap.min.css b/MessagesClient/wwwroot/bootstrap/bootstrap.min.css
+similarity index 100%
+rename from MessageClients/wwwroot/bootstrap/bootstrap.min.css
+rename to MessagesClient/wwwroot/bootstrap/bootstrap.min.css
+diff --git a/MessageClients/wwwroot/bootstrap/bootstrap.min.css.map b/MessagesClient/wwwroot/bootstrap/bootstrap.min.css.map
+similarity index 100%
+rename from MessageClients/wwwroot/bootstrap/bootstrap.min.css.map
+rename to MessagesClient/wwwroot/bootstrap/bootstrap.min.css.map
+diff --git a/MessageClients/wwwroot/favicon.png b/MessagesClient/wwwroot/favicon.png
+similarity index 100%
+rename from MessageClients/wwwroot/favicon.png
+rename to MessagesClient/wwwroot/favicon.png
+diff --git a/MessagesServer/Controllers/MessageController.cs b/MessagesServer/Controllers/MessageController.cs
+new file mode 100644
+index 0000000..c7f9d85
+--- /dev/null
++++ b/MessagesServer/Controllers/MessageController.cs
+@@ -0,0 +1,25 @@
++using MessagesServer.DTOs;
++using MessagesServer.Services;
++using Microsoft.AspNetCore.Mvc;
++
++namespace MessagesServer.Controllers;
++[ApiController]
++[Route("[controller]")]
++public class MessageController(IMessageService messageService, ILogger<MessageController> logger) : ControllerBase
++{
++    [HttpPost("send")]
++    public async Task<IActionResult> PostMessage([FromBody] MessageToSendDto message)
++    {
++        logger.LogInformation("Message to post: {Message}", message);
++        await messageService.SendMessageAsync(message);
++        return NoContent();
++    }
++
++    [HttpGet]
++    public async Task<ActionResult<List<MessageToGetDto>>> GetMessages([FromQuery] DateTime? from, [FromQuery] DateTime? to)
++    {
++        logger.LogInformation("Given interval: {From}-{To}", from, to);
++        var messages = await messageService.GetMessagesAsync(from, to);
++        return Ok(messages);
++    }
++}
+diff --git a/MessageExchange/DAOs/MessageDao.cs b/MessagesServer/DAOs/MessageDao.cs
+similarity index 76%
+rename from MessageExchange/DAOs/MessageDao.cs
+rename to MessagesServer/DAOs/MessageDao.cs
+index 16aa829..55bccef 100644
+--- a/MessageExchange/DAOs/MessageDao.cs
++++ b/MessagesServer/DAOs/MessageDao.cs
+@@ -1,9 +1,9 @@
+-﻿namespace MessageExchange.DAOs;
++﻿namespace MessagesServer.DAOs;
+ 
+ public class MessageDao
+ {
+     public Guid Id { get; set; }
+-    public string Content { get; set; }
++    public string Content { get; set; } = string.Empty;
+     public DateTime Timestamp { get; set; }
+     public Guid SerialNumber { get; set; }
+ 
+diff --git a/MessageExchange/DTOs/MessageToGetDto.cs b/MessagesServer/DTOs/MessageToGetDto.cs
+similarity index 90%
+rename from MessageExchange/DTOs/MessageToGetDto.cs
+rename to MessagesServer/DTOs/MessageToGetDto.cs
+index ade4475..f7e7ff5 100644
+--- a/MessageExchange/DTOs/MessageToGetDto.cs
++++ b/MessagesServer/DTOs/MessageToGetDto.cs
+@@ -1,4 +1,4 @@
+-﻿namespace MessageExchange.DTOs;
++﻿namespace MessagesServer.DTOs;
+ 
+ public class MessageToGetDto
+ {
+diff --git a/MessageExchange/DTOs/MessageToSendDto.cs b/MessagesServer/DTOs/MessageToSendDto.cs
+similarity index 72%
+rename from MessageExchange/DTOs/MessageToSendDto.cs
+rename to MessagesServer/DTOs/MessageToSendDto.cs
+index 3d6b650..47f818a 100644
+--- a/MessageExchange/DTOs/MessageToSendDto.cs
++++ b/MessagesServer/DTOs/MessageToSendDto.cs
+@@ -1,10 +1,10 @@
+-﻿namespace MessageExchange.DTOs;
++﻿namespace MessagesServer.DTOs;
+ 
+ public class MessageToSendDto
+ {
+     public required string Message { get; set; }
+     public required Guid SerialNumber { get; set; }
+ 
+-    public override string ToString() => 
++    public override string ToString() =>
+         $"Message: {Message}; (SerialNumber: {SerialNumber})";
+ }
+diff --git a/MessagesServer/Dockerfile b/MessagesServer/Dockerfile
+new file mode 100644
+index 0000000..4966d8f
+--- /dev/null
++++ b/MessagesServer/Dockerfile
+@@ -0,0 +1,23 @@
++FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
++USER app
++WORKDIR /app
++EXPOSE 8080
++EXPOSE 8081
++
++FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
++ARG BUILD_CONFIGURATION=Release
++
++WORKDIR /src
++COPY . .
++
++WORKDIR "/src/MessagesServer"
++RUN dotnet restore "./MessagesServer.csproj"
++RUN dotnet build "./MessagesServer.csproj" -c $BUILD_CONFIGURATION -o /app/build
++
++FROM build AS publish
++RUN dotnet publish "./MessagesServer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
++
++FROM base AS final
++WORKDIR /app
++COPY --from=publish /app/publish .
++ENTRYPOINT ["dotnet", "MessagesServer.dll"]
+diff --git a/MessagesServer/Hubs/IMessageHub.cs b/MessagesServer/Hubs/IMessageHub.cs
+new file mode 100644
+index 0000000..a7f5435
+--- /dev/null
++++ b/MessagesServer/Hubs/IMessageHub.cs
+@@ -0,0 +1,6 @@
++﻿namespace MessagesServer.Hubs;
++
++public interface IMessageHub
++{
++    Task SendMessageAsync(string message, DateTime timespan, Guid serialNumber);
++}
+diff --git a/MessagesServer/Hubs/MessageHub.cs b/MessagesServer/Hubs/MessageHub.cs
+new file mode 100644
+index 0000000..0dd656a
+--- /dev/null
++++ b/MessagesServer/Hubs/MessageHub.cs
+@@ -0,0 +1,23 @@
++﻿using Microsoft.AspNetCore.SignalR;
++
++namespace MessagesServer.Hubs;
++
++public class MessageHub(IHubContext<MessageHub> hubContext, ILogger<MessageHub> logger) : Hub, IMessageHub
++{
++    public async Task SendMessageAsync(string message, DateTime timespan, Guid serialNumber)
++    {
++        logger.LogInformation("Posting {Message} with {Timespan} and {SerialNumber}", message, timespan, serialNumber);
++
++        try
++        {
++            await hubContext.Clients.All.SendAsync("ReceiveMessage", message, timespan, serialNumber);
++        }
++        catch(Exception ex)
++        {
++            logger.LogError(ex, "Unable to send message");
++            throw;
++        }
++
++        logger.LogInformation("Message sent successfully");
++    }
++}
+diff --git a/MessagesServer/Mapping/MapperConfiguration.cs b/MessagesServer/Mapping/MapperConfiguration.cs
+new file mode 100644
+index 0000000..30cf7f1
+--- /dev/null
++++ b/MessagesServer/Mapping/MapperConfiguration.cs
+@@ -0,0 +1,16 @@
++using MessagesServer.DAOs;
++using MessagesServer.DTOs;
++using Riok.Mapperly.Abstractions;
++
++namespace MessagesServer.Mapping;
++
++[Mapper]
++public static partial class MapperConfiguration
++{
++    [MapProperty(nameof(MessageDao.Content), nameof(MessageToGetDto.Message))]
++    public static partial MessageToGetDto ToDto(this MessageDao dao);
++    public static partial List<MessageToGetDto> ToDtos(this List<MessageDao> daos);
++
++    [MapProperty(nameof(MessageToSendDto.Message), nameof(MessageDao.Content))]
++    public static partial MessageDao ToDao(this MessageToSendDto dto);
++}
+diff --git a/MessageExchange/MessageExchange.csproj b/MessagesServer/MessagesServer.csproj
+similarity index 91%
+rename from MessageExchange/MessageExchange.csproj
+rename to MessagesServer/MessagesServer.csproj
+index d53187c..85c3f7a 100644
+--- a/MessageExchange/MessageExchange.csproj
++++ b/MessagesServer/MessagesServer.csproj
+@@ -10,9 +10,9 @@
+ 
+   <ItemGroup>
+     <PackageReference Include="AssemblyMarkers" Version="1.0.0" />
+-    <PackageReference Include="AutoMapper" Version="13.0.1" />
+     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+     <PackageReference Include="Npgsql" Version="8.0.3" />
++    <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
+     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+   </ItemGroup>
+ 
+diff --git a/MessageExchange/Program.cs b/MessagesServer/Program.cs
+similarity index 71%
+rename from MessageExchange/Program.cs
+rename to MessagesServer/Program.cs
+index 32e2830..916081b 100644
+--- a/MessageExchange/Program.cs
++++ b/MessagesServer/Program.cs
+@@ -1,7 +1,6 @@
+-using MessageExchange;
+-using MessageExchange.Hubs;
+-using MessageExchange.Repositories;
+-using MessageExchange.Services;
++using MessagesServer.Hubs;
++using MessagesServer.Repositories;
++using MessagesServer.Services;
+ using Npgsql;
+ 
+ var builder = WebApplication.CreateBuilder(args);
+@@ -9,7 +8,6 @@ builder.Logging.ClearProviders();
+ builder.Logging.AddConsole();
+ 
+ var services = builder.Services;
+-// Add services to the container.
+ 
+ services.AddControllers();
+ 
+@@ -19,17 +17,13 @@ services.AddSingleton(new NpgsqlConnection(connectionString));
+ services.AddScoped<IMessageRepository, MessageRepository>();
+ services.AddScoped<IMessageService, MessageService>();
+ services.AddScoped<IMessageHub, MessageHub>();
+-services.AddAutoMapper(AssemblyMarker.Assembly);
+ services.AddSignalR();
+ 
+-
+-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+ services.AddEndpointsApiExplorer();
+ services.AddSwaggerGen();
+ 
+ var app = builder.Build();
+ 
+-// Configure the HTTP request pipeline.
+ if (app.Environment.IsDevelopment())
+ {
+     app.UseSwagger();
+@@ -44,4 +38,8 @@ app.MapControllers();
+ 
+ app.MapHub<MessageHub>("/hub/message");
+ 
++using var scope = app.Services.CreateScope();
++var messagesRepository = scope.ServiceProvider.GetRequiredService<IMessageRepository>();
++await messagesRepository.EnsureTableExistsAsync();
++
+ app.Run();
+diff --git a/MessageExchange/Properties/launchSettings.json b/MessagesServer/Properties/launchSettings.json
+similarity index 100%
+rename from MessageExchange/Properties/launchSettings.json
+rename to MessagesServer/Properties/launchSettings.json
+diff --git a/MessageExchange/Repositories/IMessageRepository.cs b/MessagesServer/Repositories/IMessageRepository.cs
+similarity index 77%
+rename from MessageExchange/Repositories/IMessageRepository.cs
+rename to MessagesServer/Repositories/IMessageRepository.cs
+index d1bfdd7..8d225f7 100644
+--- a/MessageExchange/Repositories/IMessageRepository.cs
++++ b/MessagesServer/Repositories/IMessageRepository.cs
+@@ -1,6 +1,6 @@
+-﻿using MessageExchange.DAOs;
++﻿using MessagesServer.DAOs;
+ 
+-namespace MessageExchange.Repositories;
++namespace MessagesServer.Repositories;
+ 
+ public interface IMessageRepository
+ {
+@@ -9,4 +9,5 @@ public interface IMessageRepository
+     Task<List<MessageDao>> GetMessagesAfterAsync(DateTime from);
+     Task<List<MessageDao>> GetMessagesBeforeAsync(DateTime to);
+     Task<List<MessageDao>> GetAllMessagesAsync();
++    Task EnsureTableExistsAsync();
+ }
+diff --git a/MessagesServer/Repositories/MessageRepository.cs b/MessagesServer/Repositories/MessageRepository.cs
+new file mode 100644
+index 0000000..a7b53d0
+--- /dev/null
++++ b/MessagesServer/Repositories/MessageRepository.cs
+@@ -0,0 +1,154 @@
++﻿using MessagesServer.DAOs;
++using Npgsql;
++
++namespace MessagesServer.Repositories;
++
++public class MessageRepository(NpgsqlConnection connection, ILogger<MessageRepository> logger) : IMessageRepository
++{
++    public async Task AddMessageAsync(MessageDao message)
++    {
++        if (message.Content.Length > 128)
++        {
++            var ex = new InvalidOperationException("Message exceed 128 characters");
++            logger.LogError(ex, "Message exceed 128 characters, length: {ContentLength}", message.Content.Length);
++            throw ex;
++        }
++
++        const string query = "INSERT INTO Messages (Content, Timestamp, SerialNumber) VALUES (@content, @timestamp, @serialNumber)";
++        await using var cmd = new NpgsqlCommand(query, connection);
++
++        cmd.Parameters.AddWithValue("content", message.Content);
++        cmd.Parameters.AddWithValue("timestamp", message.Timestamp);
++        cmd.Parameters.AddWithValue("serialNumber", message.SerialNumber);
++        logger.LogDebug("Parameters to save message in DB: {@NpgsqlParameters}", cmd.Parameters);
++
++        try
++        {
++            await connection.OpenAsync();
++            await cmd.ExecuteNonQueryAsync();
++            logger.LogInformation("Query was executed successfully");
++        }
++        catch(Exception ex)
++        {
++            logger.LogError(ex, "Unable to add message");
++            throw;
++        }
++        finally
++        {
++            await connection.CloseAsync();
++        }
++    }
++
++    public async Task<List<MessageDao>> GetMessagesForPeriodAsync(DateTime from, DateTime to)
++    {
++        logger.LogInformation("Getting messages for interval {From}-{To}", from, to);
++        const string query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages WHERE Timestamp BETWEEN @from AND @to";
++        await using var cmd = new NpgsqlCommand(query, connection);
++
++        cmd.Parameters.AddWithValue("from", from);
++        cmd.Parameters.AddWithValue("to", to);
++        logger.LogDebug("Parameters to get message from DB: {@NpgsqlParameters}", cmd.Parameters);
++
++        return await ReadMessagesAsync(cmd); ;
++    }
++
++    public async Task<List<MessageDao>> GetMessagesAfterAsync(DateTime from)
++    {
++        logger.LogInformation("Getting messages for min date: {From}", from);
++        const string query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages WHERE Timestamp >= @from";
++
++        await using var cmd = new NpgsqlCommand(query, connection);
++        cmd.Parameters.AddWithValue("from", from);
++        logger.LogDebug("Parameters to get message from DB: {@NpgsqlParameters}", cmd.Parameters);
++
++        return await ReadMessagesAsync(cmd);
++    }
++
++    public async Task<List<MessageDao>> GetMessagesBeforeAsync(DateTime to)
++    {
++        logger.LogInformation("Getting messages for max date: {To}", to);
++        const string query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages WHERE Timestamp <= @to";
++
++        await using var cmd = new NpgsqlCommand(query, connection);
++        cmd.Parameters.AddWithValue("to", to);
++        logger.LogDebug("Parameters to get message from DB: {@NpgsqlParameters}", cmd.Parameters);
++
++        return await ReadMessagesAsync(cmd); ;
++    }
++
++    public async Task<List<MessageDao>> GetAllMessagesAsync()
++    {
++        logger.LogInformation("Getting all messages");
++        const string query = "SELECT Id, Content, Timestamp, SerialNumber FROM Messages";
++
++        await using var cmd = new NpgsqlCommand(query, connection);
++
++        return await ReadMessagesAsync(cmd);
++    }
++
++    private async Task<List<MessageDao>> ReadMessagesAsync(NpgsqlCommand cmd)
++    {
++        var messages = new List<MessageDao>();
++
++        try
++        {
++            await connection.OpenAsync();
++            await using var reader = await cmd.ExecuteReaderAsync();
++            while (await reader.ReadAsync())
++            {
++                messages.Add(new MessageDao
++                {
++                    Id = reader.GetGuid(0),
++                    Content = reader.GetString(1),
++                    Timestamp = reader.GetDateTime(2),
++                    SerialNumber = reader.GetGuid(3)
++                });
++            }
++
++            logger.LogInformation("Messages received successfully");
++        }
++        catch(Exception ex)
++        {
++            logger.LogError(ex, "Unable to receive messages");
++            throw;
++        }
++        finally
++        {
++            await connection.CloseAsync();
++        }
++
++        logger.LogDebug("Got {MessageCount} messages", messages.Count);
++        return messages;
++    }
++
++
++    public async Task EnsureTableExistsAsync()
++    {
++        try
++        {
++            await connection.OpenAsync();
++
++            const string createTableQuery = @"
++            CREATE EXTENSION IF NOT EXISTS pgcrypto;
++            
++            CREATE TABLE IF NOT EXISTS Messages (
++                Id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
++                Content TEXT NOT NULL,
++                Timestamp TIMESTAMP NOT NULL,
++                SerialNumber UUID NOT NULL
++            );";
++
++            await using var command = new NpgsqlCommand(createTableQuery, connection);
++            await command.ExecuteNonQueryAsync();
++        }
++        catch(Exception ex)
++        {
++            logger.LogError(ex, "Unable to create Messages table");
++            throw;
++        }
++        finally
++        {
++            await connection.CloseAsync();
++        }
++    }
++}
+diff --git a/MessagesServer/Services/IMessageService.cs b/MessagesServer/Services/IMessageService.cs
+new file mode 100644
+index 0000000..65bb2fc
+--- /dev/null
++++ b/MessagesServer/Services/IMessageService.cs
+@@ -0,0 +1,9 @@
++﻿using MessagesServer.DTOs;
++
++namespace MessagesServer.Services;
++
++public interface IMessageService
++{
++    Task SendMessageAsync(MessageToSendDto message);
++    Task<List<MessageToGetDto>> GetMessagesAsync(DateTime? from, DateTime? to);
++}
+diff --git a/MessagesServer/Services/MessageService.cs b/MessagesServer/Services/MessageService.cs
+new file mode 100644
+index 0000000..506dda1
+--- /dev/null
++++ b/MessagesServer/Services/MessageService.cs
+@@ -0,0 +1,38 @@
++﻿using MessagesServer.Mapping;
++using MessagesServer.DTOs;
++using MessagesServer.Hubs;
++using MessagesServer.Repositories;
++
++namespace MessagesServer.Services;
++
++public class MessageService(
++    IMessageRepository messageRepository,
++    IMessageHub messageHub,
++    ILogger<MessageService> logger)
++    : IMessageService
++{
++    public async Task SendMessageAsync(MessageToSendDto message)
++    {
++        var messageDao = message.ToDao();
++
++        messageDao.Timestamp = DateTime.UtcNow;
++        logger.LogDebug("Assigned message Timestamp as UTC: {UtcDateTime}", messageDao.Timestamp);
++        await messageRepository.AddMessageAsync(messageDao);
++        await messageHub.SendMessageAsync(messageDao.Content, messageDao.Timestamp, messageDao.SerialNumber);
++    }
++
++    public async Task<List<MessageToGetDto>> GetMessagesAsync(DateTime? from, DateTime? to)
++    {
++        logger.LogInformation("Choosing interval type for getting messages");
++
++        var messages = (from, to) switch
++        {
++            (null,              null)            => await messageRepository.GetAllMessagesAsync(),
++            (DateTime dateFrom, null)            => await messageRepository.GetMessagesAfterAsync(dateFrom),
++            (null,              DateTime dateTo) => await messageRepository.GetMessagesBeforeAsync(dateTo),
++            (DateTime dateFrom, DateTime dateTo) => await messageRepository.GetMessagesForPeriodAsync(dateFrom, dateTo)
++        };
++
++        return messages.ToDtos();
++    }
++}
+diff --git a/MessageExchange/appsettings.Development.json b/MessagesServer/appsettings.Development.json
+similarity index 100%
+rename from MessageExchange/appsettings.Development.json
+rename to MessagesServer/appsettings.Development.json
+diff --git a/MessageExchange/appsettings.json b/MessagesServer/appsettings.json
+similarity index 100%
+rename from MessageExchange/appsettings.json
+rename to MessagesServer/appsettings.json
+diff --git a/docker-compose.yml b/docker-compose.yml
+index fc43f02..56556ed 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -1,9 +1,9 @@
+ services:
+   server:
+-    image: message_exchange_app
++    image: server
+     build:
+       context: .
+-      dockerfile: MessageExchange/Dockerfile
++      dockerfile: MessagesServer/Dockerfile
+     ports:
+       - "8080:8080"
+       - "8081:8081"  
+@@ -16,10 +16,10 @@ services:
+       - app-network
+ 
+   clients:
+-    image: message_clients_app
++    image: client
+     build:
+       context: .
+-      dockerfile: MessageClients/Dockerfile
++      dockerfile: MessagesClient/Dockerfile
+     ports:
+       - "8082:8082"
+       - "8083:8083"
+-- 
+2.39.3 (Apple Git-146)
+
